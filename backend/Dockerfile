@@ -1,15 +1,17 @@
-# ---------- Build Stage ----------
+# -------- BUILD STAGE --------
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
+# Copy only pom first (better cache)
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
-COPY src src
 
+# Copy source
+COPY src ./src
+
+# Build jar
 RUN mvn -B -DskipTests clean package
 
-# ---------- Run Stage ----------
+# -------- RUN STAGE --------
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
